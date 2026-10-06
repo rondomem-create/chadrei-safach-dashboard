@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>מערכת שיבוץ חדרי ספח</title>
+  <style>
+    :root{
+      --blue:#2563eb;--blue-dark:#1d4ed8;--slate-50:#f8fafc;--slate-100:#f1f5f9;--slate-200:#e2e8f0;
+      --slate-300:#cbd5e1;--slate-500:#64748b;--slate-700:#334155;--slate-900:#0f172a;--green:#16a34a;
+      --shadow:0 8px 30px rgba(15,23,42,.08);--radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,"Noto Sans Hebrew",sans-serif;background:#fff;color:var(--slate-900)}
+    .shell{max-width:1700px;margin:0 auto;padding:22px}
+    .top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+    h1{margin:0;color:var(--blue);font-size:clamp(26px,3vw,42px);line-height:1.1;font-weight:800}
+    .subtitle{margin-top:7px;color:var(--slate-500);font-size:16px}
+    .status{display:flex;align-items:center;gap:8px;color:var(--slate-700);font-size:14px;margin-top:10px}
+    .dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px #dcfce7}
+    .dot.loading{background:#f59e0b;box-shadow:0 0 0 4px #fef3c7}
+    .dot.error{background:#ef4444;box-shadow:0 0 0 4px #fee2e2}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    button,select{font:inherit}
+    .btn{border:1px solid transparent;border-radius:12px;padding:10px 15px;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
+    .btn:hover{transform:translateY(-1px)}
+    .btn-refresh{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
+    .btn-print{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+    .btn-printall{background:#fff7ed;color:#c2410c;border-color:#fed7aa}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 18px}
+    .tab{background:var(--slate-100);color:var(--slate-700);border:0;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer}
+    .tab:hover{background:var(--slate-200)}
+    .tab.active{background:var(--blue);color:#fff;box-shadow:0 5px 14px rgba(37,99,235,.22)}
+    .panel{display:none}.panel.active{display:block}
+    .card{border:1px solid var(--slate-200);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);overflow:hidden}
+    .card-head{padding:16px 18px;border-bottom:1px solid var(--slate-200);background:var(--slate-50);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .card-title{font-size:19px;font-weight:800;color:var(--slate-900)}
+    .muted{color:var(--slate-500);font-size:13px}
+    .filter{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .filter label{font-weight:700;color:var(--slate-700)}
+    select{min-width:250px;background:#fff;border:1px solid var(--slate-300);border-radius:10px;padding:9px 12px;color:var(--slate-900);outline:none}
+    select:focus{border-color:#60a5fa;box-shadow:0 0 0 3px #dbeafe}
+    .table-wrap{overflow:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+    table{width:100%;border-collapse:separate;border-spacing:0;min-width:900px}
+    th,td{border-bottom:1px solid var(--slate-200);border-left:1px solid var(--slate-200);padding:10px 9px;text-align:center;vertical-align:middle}
+    th:last-child,td:last-child{border-left:0}
+    thead th{position:sticky;top:0;z-index:2;background:var(--slate-100);color:var(--slate-700);font-size:13px;font-weight:800}
+    tbody tr:nth-child(even){background:#fcfdff}
+    tbody tr:hover{background:#f8fbff}
+    .daycell{font-weight:800;color:var(--blue-dark);background:#eff6ff!important;min-width:70px}
+    .timecell{white-space:nowrap;font-weight:700;color:var(--slate-700)}
+    .badges{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;align-items:center;min-height:26px}
+    .badge{display:inline-flex;align-items:center;justify-content:center;padding:5px 8px;border-radius:9px;border:1px solid transparent;font-size:12px;font-weight:800;line-height:1.2;white-space:normal}
+    .free{display:inline-flex;padding:5px 10px;border-radius:999px;background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;font-size:12px;font-weight:700}
+    .legend{display:flex;gap:7px;flex-wrap:wrap;padding:14px 18px;border-top:1px solid var(--slate-200);background:#fafcff}
+    .legend .badge{font-size:11px}
+    .loading-box,.error-box,.empty-box{padding:44px 18px;text-align:center;color:var(--slate-500)}
+    .error-box{color:#b91c1c;background:#fef2f2}
+    .footer{padding:16px 0 2px;color:#94a3b8;font-size:12px;text-align:center}
+    .print-only{display:none}
+    @media (max-width:760px){.shell{padding:12px}.actions{width:100%}.btn{flex:1}.tab{flex:1 1 45%;font-size:13px}.card-head{align-items:stretch}.filter{width:100%}.filter select{width:100%;min-width:0}}
+    @media print{
+      body{background:#fff}.shell{max-width:none;padding:0}.actions,.tabs,.footer,.no-print{display:none!important}.panel{display:none!important}.panel.active{display:block!important}.card{box-shadow:none;border:0}.card-head{background:#fff;border-bottom:1px solid #999;padding:8px 0}.table-wrap{overflow:visible}table{min-width:0;font-size:9px}th,td{padding:4px}.badge,.free{font-size:8px;padding:3px 4px}thead th{position:static}.top{margin-bottom:8px}h1{font-size:22px}.subtitle{font-size:12px}
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <div>
+      <h1>מערכת שיבוץ חדרי ספח</h1>
+      <div class="subtitle">תלמוד תורה חב״ד תפארת שמואל • בית שמש</div>
+      <div class="status"><span id="statusDot" class="dot loading"></span><span id="statusText">טוען נתונים מגוגל שיטס…</span></div>
+    </div>
+    <div class="actions no-print">
+      <button class="btn btn-refresh" id="refreshBtn">↻ רענן נתונים</button>
+      <button class="btn btn-print" id="printBtn">🖨 הדפס מערכת</button>
+      <button class="btn btn-printall" id="printAllBtn">🖨 הדפס את כל המערכות</button>
+    </div>
+  </header>
+
+  <nav class="tabs no-print" aria-label="תצוגות">
+    <button class="tab active" data-tab="today">תצוגת היום (נוכחי)</button>
+    <button class="tab" data-tab="room">לפי חדר ספח (מערכת שבועית)</button>
+    <button class="tab" data-tab="teacher">לפי מורה / משתמש (מערכת שבועית)</button>
+    <button class="tab" data-tab="full">מערכת שבועית מלאה</button>
+  </nav>
+
+  <section id="today" class="panel active"><div class="card"><div id="todayContent" class="loading-box">טוען…</div></div></section>
+  <section id="room" class="panel"><div class="card"><div id="roomContent" class="loading-box">טוען…</div></div></section>
+  <section id="teacher" class="panel"><div class="card"><div id="teacherContent" class="loading-box">טוען…</div></div></section>
+  <section id="full" class="panel"><div class="card"><div id="fullContent" class="loading-box">טוען…</div></div></section>
+
+  <div class="footer">הנתונים נשאבים ישירות מגיליון Google Sheets המקורי • עדכון ידני בכפתור “רענן נתונים”</div>
+</div>
+<script>
+(() => {
+  'use strict';
+  const SHEET_ID = '1rmW0ugWoNTrfIpfNWdGEH_lnUrTyhqbrYl0YelH0cQE';
+  const SHEET_NAME = 'גיליון1';
+  const DAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי'];
+  const EN_DAY = {Sun:'ראשון',Mon:'שני',Tue:'שלישי',Wed:'רביעי',Thu:'חמישי',Fri:'שישי',Sat:'שבת'};
+  let state = {headers:[], rooms:[], rows:[], teachers:[], teacherColors:new Map(), activeTab:'today', selectedRoom:'', selectedTeacher:'', lastUpdate:null};
+  let timeoutId = null;
+
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const normalize = s => String(s ?? '').replace(/[–—]/g,'-').replace(/\s*-\s*/g,' - ').replace(/\s+/g,' ').trim();
+  const lessonNum = s => Number((String(s).match(/\d+/)||['999'])[0]);
+
+  function splitPeople(value){
+    let s = normalize(value);
+    if(!s) return [];
+    s = s.replace(/\s*,\s*/g,'|');
+    s = s.replace(/\s+(?=(?:המורה|הרב)\s)/g,'|');
+    return [...new Set(s.split('|').map(normalize).filter(Boolean))];
+  }
+
+  function buildTeacherPalette(){
+    const seen=[];
+    state.rows.forEach(r => state.rooms.forEach(room => splitPeople(r[room]).forEach(p => {if(!seen.includes(p)) seen.push(p)})));
+    state.teachers = seen;
+    state.teacherColors = new Map();
+    seen.forEach((name,i) => {
+      const h = Math.round((i * 137.508) % 360);
+      state.teacherColors.set(name,{bg:`hsl(${h} 82% 92%)`, border:`hsl(${h} 60% 72%)`, text:`hsl(${h} 48% 27%)`});
+    });
+  }
+
+  function badge(name){
+    const c = state.teacherColors.get(name) || {bg:'#eff6ff',border:'#bfdbfe',text:'#1d4ed8'};
+    return `<span class="badge" style="background:${c.bg};border-color:${c.border};color:${c.text}">${esc(name)}</span>`;
+  }
+  function peopleBadges(value){
+    const ps=splitPeople(value);
+    return ps.length ? `<div class="badges">${ps.map(badge).join('')}</div>` : '<span class="free">פנוי</span>';
+  }
+
+  function currentSchoolDay(){
+    const en = new Intl.DateTimeFormat('en-US',{weekday:'short',timeZone:'Asia/Jerusalem'}).format(new Date());
+    return EN_DAY[en] || 'ראשון';
+  }
+
+  function setStatus(kind, text){
+    const dot=$('#statusDot'); dot.className='dot '+(kind||'');
+    $('#statusText').textContent=text;
+  }
+
+  function loadData(){
+    setStatus('loading','טוען נתונים מגוגל שיטס…');
+    $('#refreshBtn').disabled=true;
+    clearTimeout(timeoutId);
+    const old=document.getElementById('sheetJsonp'); if(old) old.remove();
+    const script=document.createElement('script'); script.id='sheetJsonp';
+    const tqx=`out:json;responseHandler:sheetCallback;reqId:${Date.now()}`;
+    script.src=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(SHEET_NAME)}&headers=1&tqx=${encodeURIComponent(tqx)}&_=${Date.now()}`;
+    script.onerror=()=>showLoadError('לא ניתן היה לטעון את הנתונים מגוגל שיטס.');
+    document.head.appendChild(script);
+    timeoutId=setTimeout(()=>showLoadError('טעינת הנתונים ארכה זמן רב מדי. נסה לרענן.'),15000);
+  }
+
+  function showLoadError(msg){
+    clearTimeout(timeoutId); $('#refreshBtn').disabled=false; setStatus('error',msg);
+    ['todayContent','roomContent','teacherContent','fullContent'].forEach(id=>document.getElementById(id).innerHTML=`<div class="error-box">${esc(msg)}</div>`);
+  }
+
+  window.sheetCallback = function(payload){
+    clearTimeout(timeoutId); $('#refreshBtn').disabled=false;
+    try{
+      if(!payload || payload.status!=='ok' || !payload.table) throw new Error('invalid');
+      const cols=payload.table.cols||[];
+      const headers=cols.map(c=>normalize(c.label));
+      const rows=(payload.table.rows||[]).map(rr=>{
+        const o={}; headers.forEach((h,i)=>{const c=rr.c?.[i]; o[h]=normalize(c ? (c.f ?? c.v ?? '') : '')}); return o;
+      }).filter(r=>r['יום']);
+      state.headers=headers; state.rooms=headers.slice(4); state.rows=rows; state.lastUpdate=new Date();
+      buildTeacherPalette();
+      if(!state.selectedRoom || !state.rooms.includes(state.selectedRoom)) state.selectedRoom=state.rooms[0]||'';
+      if(!state.selectedTeacher || !state.teachers.includes(state.selectedTeacher)) state.selectedTeacher=state.teachers[0]||'';
+      const time=new Intl.DateTimeFormat('he-IL',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jerusalem'}).format(state.lastUpdate);
+      setStatus('',`מקורר ומעודכן לגוגל שיטס • עודכן ${time}`);
+      renderAll();
+    }catch(e){showLoadError('התקבלו נתונים לא תקינים מגוגל שיטס.');}
+  };
+
+  function getRowsForDay(day){ return state.rows.filter(r=>r['יום']===day).sort((a,b)=>lessonNum(a['שעה'])-lessonNum(b['שעה'])); }
+  function rowKey(r){ return `${r['יום']}|${r['שעה']}`; }
+  function lessonTemplate(){
+    const map=new Map();
+    state.rows.forEach(r=>{ const n=lessonNum(r['שעה']); if(!map.has(n)) map.set(n,{lesson:r['שעה'],start:r['התחלה'],end:r['סיום'],n}); });
+    return [...map.values()].sort((a,b)=>a.n-b.n);
+  }
+  function rowAt(day, lesson){ return state.rows.find(r=>r['יום']===day && lessonNum(r['שעה'])===lessonNum(lesson)); }
+
+  function renderToday(){
+    const day=currentSchoolDay();
+    const rows=getRowsForDay(day);
+    let html=`<div class="card-head"><div><div class="card-title">תצוגת היום — ${esc(day)}</div><div class="muted">כל חדרי הספח לפי שעות היום</div></div></div>`;
+    if(!rows.length){ html += `<div class="empty-box">אין מערכת ליום ${esc(day)}.</div>`; $('#todayContent').innerHTML=html; return; }
+    html += `<div class="table-wrap"><table><thead><tr><th>יום</th><th>שיעור / שעה</th><th>התחלה</th><th>סיום</th>${state.rooms.map(r=>`<th>${esc(r)}</th>`).join('')}</tr></thead><tbody>`;
+    rows.forEach(r=>{
+      html += `<tr><td class="daycell">${esc(r['יום'])}</td><td class="timecell">${esc(r['שעה'])}</td><td>${esc(r['התחלה'])}</td><td>${esc(r['סיום'])}</td>${state.rooms.map(room=>`<td>${peopleBadges(r[room])}</td>`).join('')}</tr>`;
+    });
+    html += `</tbody></table></div>`;
+    $('#todayContent').innerHTML=html;
+  }
+
+  function renderWeekGrid(type, selected, compact=false){
+    const lessons=lessonTemplate();
+    let html=`<div class="table-wrap"><table><thead><tr><th>שעה</th>${DAYS.map(d=>`<th>${d}</th>`).join('')}</tr></thead><tbody>`;
+    lessons.forEach(l=>{
+      html += `<tr><td class="timecell"><div>${esc(l.lesson)}</div><div class="muted">${esc(l.start)}–${esc(l.end)}</div></td>`;
+      DAYS.forEach(day=>{
+        const r=rowAt(day,l.lesson);
+        if(!r){html+='<td><span class="free">—</span></td>';return;}
+        if(type==='room') html += `<td>${peopleBadges(r[selected])}</td>`;
+        else {
+          const hits=[]; state.rooms.forEach(room=>{ if(splitPeople(r[room]).includes(selected)) hits.push(room); });
+          const c=state.teacherColors.get(selected);
+          html += hits.length ? `<td><div class="badges">${hits.map(room=>`<span class="badge" style="background:${c.bg};border-color:${c.border};color:${c.text}">${esc(room)}</span>`).join('')}</div></td>` : `<td><span class="free">פנוי</span></td>`;
+        }
+      });
+      html+='</tr>';
+    });
+    return html+'</tbody></table></div>';
+  }
+
+  function renderRoom(){
+    const options=state.rooms.map(r=>`<option ${r===state.selectedRoom?'selected':''}>${esc(r)}</option>`).join('');
+    $('#roomContent').innerHTML=`<div class="card-head"><div><div class="card-title">לפי חדר ספח</div><div class="muted">מערכת שבועית של החדר הנבחר</div></div><div class="filter no-print"><label for="roomSelect">בחר חדר ספח:</label><select id="roomSelect">${options}</select></div></div>${renderWeekGrid('room',state.selectedRoom)}`;
+    $('#roomSelect')?.addEventListener('change',e=>{state.selectedRoom=e.target.value;renderRoom()});
+  }
+
+  function renderTeacher(){
+    const options=state.teachers.map(t=>`<option ${t===state.selectedTeacher?'selected':''}>${esc(t)}</option>`).join('');
+    const legend=state.teachers.map(t=>badge(t)).join('');
+    $('#teacherContent').innerHTML=`<div class="card-head"><div><div class="card-title">לפי מורה / משתמש</div><div class="muted">כל מורה מסומן בצבע קבוע ושונה</div></div><div class="filter no-print"><label for="teacherSelect">בחר מורה / משתמש:</label><select id="teacherSelect">${options}</select></div></div>${renderWeekGrid('teacher',state.selectedTeacher)}<div class="legend no-print">${legend}</div>`;
+    $('#teacherSelect')?.addEventListener('change',e=>{state.selectedTeacher=e.target.value;renderTeacher()});
+  }
+
+  function renderFull(){
+    let html=`<div class="card-head"><div><div class="card-title">מערכת שבועית מלאה</div><div class="muted">כל הימים, השעות וחדרי הספח</div></div></div><div class="table-wrap"><table><thead><tr><th>יום</th><th>שיעור / שעה</th><th>התחלה</th><th>סיום</th>${state.rooms.map(r=>`<th>${esc(r)}</th>`).join('')}</tr></thead><tbody>`;
+    DAYS.forEach(day=>getRowsForDay(day).forEach(r=>{
+      html += `<tr><td class="daycell">${esc(day)}</td><td class="timecell">${esc(r['שעה'])}</td><td>${esc(r['התחלה'])}</td><td>${esc(r['סיום'])}</td>${state.rooms.map(room=>`<td>${peopleBadges(r[room])}</td>`).join('')}</tr>`;
+    }));
+    html += '</tbody></table></div>';
+    $('#fullContent').innerHTML=html;
+  }
+
+  function renderAll(){ renderToday(); renderRoom(); renderTeacher(); renderFull(); }
+
+  document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b===btn));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===btn.dataset.tab));
+    state.activeTab=btn.dataset.tab;
+  }));
+  $('#refreshBtn').addEventListener('click',loadData);
+  $('#printBtn').addEventListener('click',()=>window.print());
+
+  function printStyles(){return `
+    body{font-family:Arial,"Noto Sans Hebrew",sans-serif;direction:rtl;color:#0f172a;margin:12mm}h1{color:#2563eb;margin:0 0 3px;font-size:22px}.sub{color:#64748b;margin-bottom:14px}.section{page-break-after:always}.section:last-child{page-break-after:auto}h2{font-size:18px;margin:0 0 10px;color:#1d4ed8}table{width:100%;border-collapse:collapse;font-size:9px}th,td{border:1px solid #cbd5e1;padding:4px;text-align:center;vertical-align:middle}th{background:#f1f5f9}.badge{display:inline-block;padding:2px 4px;border-radius:5px;border:1px solid transparent;font-weight:700;margin:1px}.free{color:#15803d}.muted{color:#64748b;font-size:8px}.badges{display:flex;gap:2px;flex-wrap:wrap;justify-content:center}@page{size:landscape;margin:8mm}`;}
+  function gridForPrint(type, selected){
+    const lessons=lessonTemplate(); let h='<table><thead><tr><th>שעה</th>'+DAYS.map(d=>`<th>${d}</th>`).join('')+'</tr></thead><tbody>';
+    lessons.forEach(l=>{h+=`<tr><td><b>${esc(l.lesson)}</b><div class="muted">${esc(l.start)}–${esc(l.end)}</div></td>`; DAYS.forEach(day=>{const r=rowAt(day,l.lesson);if(!r){h+='<td>—</td>';return;} if(type==='room'){const ps=splitPeople(r[selected]);h+=`<td>${ps.length?`<div class="badges">${ps.map(badge).join('')}</div>`:'<span class="free">פנוי</span>'}</td>`;} else {const hits=[];state.rooms.forEach(room=>{if(splitPeople(r[room]).includes(selected))hits.push(room)});const c=state.teacherColors.get(selected);h+=`<td>${hits.length?`<div class="badges">${hits.map(room=>`<span class="badge" style="background:${c.bg};border-color:${c.border};color:${c.text}">${esc(room)}</span>`).join('')}</div>`:'<span class="free">פנוי</span>'}</td>`;}});h+='</tr>';}); return h+'</tbody></table>';
+  }
+  function fullForPrint(){
+    let h='<table><thead><tr><th>יום</th><th>שיעור</th><th>התחלה</th><th>סיום</th>'+state.rooms.map(r=>`<th>${esc(r)}</th>`).join('')+'</tr></thead><tbody>';
+    DAYS.forEach(day=>getRowsForDay(day).forEach(r=>{h+=`<tr><td><b>${day}</b></td><td>${esc(r['שעה'])}</td><td>${esc(r['התחלה'])}</td><td>${esc(r['סיום'])}</td>${state.rooms.map(room=>`<td>${peopleBadges(r[room])}</td>`).join('')}</tr>`;}));return h+'</tbody></table>';
+  }
+  $('#printAllBtn').addEventListener('click',()=>{
+    if(!state.rows.length) return;
+    const w=window.open('','_blank'); if(!w){alert('הדפדפן חסם חלון הדפסה. יש לאפשר חלונות קופצים לאתר.');return;}
+    let body=`<h1>מערכת שיבוץ חדרי ספח</h1><div class="sub">תלמוד תורה חב״ד תפארת שמואל • בית שמש</div>`;
+    body+=`<section class="section"><h2>מערכת שבועית מלאה</h2>${fullForPrint()}</section>`;
+    state.rooms.forEach(room=>{body+=`<section class="section"><h2>חדר ספח: ${esc(room)}</h2>${gridForPrint('room',room)}</section>`;});
+    state.teachers.forEach(t=>{body+=`<section class="section"><h2>מורה / משתמש: ${esc(t)}</h2>${gridForPrint('teacher',t)}</section>`;});
+    w.document.write(`<!doctype html><html dir="rtl" lang="he"><head><meta charset="utf-8"><title>הדפסת כל המערכות</title><style>${printStyles()}</style></head><body>${body}<script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>`); w.document.close();
+  });
+
+  loadData();
+  setInterval(loadData, 5*60*1000);
+})();
+</script>
+</body>
+</html>
