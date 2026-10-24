@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="דשבורד מעקב מילוי תכניות הלימודים תשפ״ז בתלמוד תורה חב״ד בית שמש">
+<title>מעקב תכניות לימודים תשפ״ז – ת״ת חב״ד בית שמש</title>
+<style>
+:root{--navy:#142a47;--blue:#2866c0;--pale:#edf4ff;--line:#e2e8f0;--paper:#fff;--muted:#64748b;--bg:#f6f8fc;--green:#148349;--amber:#ae7017;--red:#bd4b47}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Arial,"Noto Sans Hebrew",system-ui,sans-serif;color:var(--navy);line-height:1.55}
+a{text-decoration:none;color:var(--blue)}a:hover{text-decoration:underline}
+button,select,input{font:inherit}
+.container{max-width:1320px;margin:auto;padding:24px}
+.hero{background:linear-gradient(130deg,#183864,#286ac0);color:white;border-radius:22px;padding:26px 30px 24px;box-shadow:0 13px 36px #22447623}
+.hero .eyebrow{letter-spacing:.6px;font-size:13px;font-weight:750;opacity:.85}
+.hero h1{font-size:clamp(25px,3.3vw,39px);line-height:1.25;margin:8px 0 6px}
+.hero p{margin:0;color:#dce9fd;font-size:16px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:20px}
+.note{display:flex;gap:8px;align-items:center;font-size:13px;color:#dfebff}
+.status-dot{width:9px;height:9px;background:#f0c878;border-radius:50%;display:inline-block;flex-shrink:0}
+.hero-actions{display:flex;flex-wrap:wrap;gap:8px}
+button.btn,.hero-actions a{border:1px solid #ffffff77;background:#ffffff1c;border-radius:11px;color:white;padding:8px 13px;cursor:pointer;font-weight:700}
+button.btn:hover,.hero-actions a:hover{background:#ffffff35;text-decoration:none}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}
+.kpi{background:white;border:1px solid var(--line);border-radius:16px;padding:17px 20px;box-shadow:0 5px 20px #263f5b0b}
+.kpi span{color:var(--muted);font-size:13px;font-weight:600}.kpi strong{display:block;font-size:34px;margin:3px 0 0;line-height:1.2}.kpi small{color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.tab{padding:11px 18px;background:#e7edf6;color:#415c79;border:0;border-radius:11px;cursor:pointer;font-weight:750}
+.tab[aria-selected="true"]{color:white;background:var(--blue);box-shadow:0 5px 12px #2866c02a}
+.panel{display:none}.panel.active{display:block}
+.card{border:1px solid var(--line);background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 5px 25px #1f3d5e08;margin-bottom:16px}
+.card-head{padding:18px 22px;background:#fbfcfe;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.card h2{font-size:19px;margin:0}.caption{color:var(--muted);font-size:13px;margin-top:3px}
+.filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:17px 20px 5px}
+.filters select,.filters input{background:white;border:1px solid #cbd5e1;border-radius:10px;padding:10px;outline:none;color:var(--navy)}
+.filters input{min-width:245px;flex:1}.filters select{min-width:140px}
+.grid-cards{padding:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.progress-card{padding:16px;border:1px solid var(--line);border-radius:13px;background:white}
+.pc-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pc-head strong{font-size:16px}.pc-head span{font-weight:800}
+.pc-meta{font-size:12px;color:var(--muted);margin:4px 0 12px}
+.track{height:10px;background:#e8edf5;border-radius:100px;overflow:hidden}.track>b{display:block;height:100%;background:var(--blue);border-radius:100px;min-width:0;transition:width .2s}
+.stat-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px}
+.stat-row small{color:var(--muted)}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:760px}
+.table th{position:sticky;top:0;z-index:2;background:#f0f4fa;padding:12px;color:#4b6582;font-size:13px;text-align:right}
+.table td{padding:12px;border-bottom:1px solid #eef1f5;font-size:14px}
+.table tr:hover td{background:#fafcff}
+.pct{min-width:125px}.pct b{display:block;margin-bottom:6px}
+.pct .track{height:6px}.chip{border-radius:100px;padding:5px 10px;font-size:12px;white-space:nowrap;font-weight:750;display:inline-block}
+.done{background:#e0f5e8;color:#16683a}.started{background:#fff4d7;color:#7b540e}.waiting{background:#edf1f6;color:#687d92}
+.card-link{font-weight:750;white-space:nowrap}
+.alert{padding:13px 17px;border-radius:12px;background:#fff9e9;border:1px solid #f7e6c5;color:#74582f;margin:0 0 18px;font-size:13px}
+.footer{text-align:center;color:#8090a5;font-size:12px;padding:14px 0}
+.empty{text-align:center;padding:40px;color:var(--muted)}
+@media(max-width:780px){.container{padding:12px}.hero{padding:21px}.kpis{grid-template-columns:repeat(2,1fr)}.grid-cards{grid-template-columns:1fr}.filters input,.filters select{width:100%;min-width:0}.card-head{padding:14px}.kpi{padding:14px}.kpi strong{font-size:29px}.tab{flex:1 1 40%}}
+@media print{body{background:white}.container{padding:0}.hero{box-shadow:none;padding:12px;color:#000;background:#fff}.hero p,.hero .eyebrow,.toolbar,.tabs,.filters,.footer{display:none}.kpi,.card{box-shadow:none}.panel{display:none!important}.panel.active{display:block!important}.grid-cards{grid-template-columns:repeat(3,1fr)}}
+</style></head>
+<body><div class="container">
+<header class="hero">
+  <div class="eyebrow">ב״ה · תלמוד תורה חב״ד בית שמש</div>
+  <h1>תכניות לימודים ה׳תשפ״ז</h1>
+  <p>דשבורד מעקב אחר כתיבת יעדי למידה • פילוח לפי כיתות, מורים ומקצועות</p>
+  <div class="toolbar">
+   <div class="note"><span class="status-dot" id="statusDot"></span><span id="updatedAt">תמונת מצב: כ״ג בתשרי ה׳תשפ״ז</span></div>
+   <div class="hero-actions">
+    <button class="btn" type="button" id="refreshBtn">↻ רענן נתונים</button>
+    <button class="btn" type="button" onclick="window.print()">הדפס סיכום</button>
+   </div>
+  </div>
+</header>
+<section class="kpis" id="kpis"></section>
+<div class="alert" id="dataNotice">דף זה פתוח לצפייה ללא התחברות. הקישורים לתכניות המקור כפופים להרשאות Google Drive. כרגע מוצגת תמונת מצב אחרונה; סנכרון חי יתאפשר לאחר חיבור מקור נתונים ציבורי מצומצם.</div>
+<nav class="tabs" aria-label="סוג התצוגה">
+<button class="tab" role="tab" aria-selected="true" data-tab="overview">סקירה כללית</button>
+<button class="tab" role="tab" aria-selected="false" data-tab="classes">לפי כיתות</button>
+<button class="tab" role="tab" aria-selected="false" data-tab="teachers">לפי מורים</button>
+<button class="tab" role="tab" aria-selected="false" data-tab="all">כל התכניות</button>
+</nav>
+<section id="overview" class="panel active" role="tabpanel"><div class="card"><div class="card-head"><div><h2>התקדמות לפי כיתה</h2><div class="caption">שיעור מילוי יעדי למידה מכלל השבועות הנדרשים</div></div></div><div id="overviewCards" class="grid-cards"></div></div></section>
+<section id="classes" class="panel" role="tabpanel"><div class="card"><div class="card-head"><div><h2>תכניות לפי כיתה</h2><div class="caption">בחירת כיתה והצגת כל המקצועות והמורים</div></div></div><div class="filters"><select id="classFilter" aria-label="בחר כיתה"></select></div><div class="table-wrap" id="classTable"></div></div></section>
+<section id="teachers" class="panel" role="tabpanel"><div class="card"><div class="card-head"><div><h2>תכניות לפי מורה</h2><div class="caption">ריכוז תכניות של מורה גם בכיתות שונות</div></div></div><div class="filters"><select id="teacherFilter" aria-label="בחר מורה"></select></div><div id="teacherSummary" class="grid-cards"></div><div class="table-wrap" id="teacherTable"></div></div></section>
+<section id="all" class="panel" role="tabpanel"><div class="card"><div class="card-head"><div><h2>כל תכניות הלימודים</h2><div class="caption">חיפוש וסינון מקצוע, מורה וכיתה</div></div></div><div class="filters"><input id="searchBox" placeholder="חיפוש לפי מורה, מקצוע או כיתה"><select id="allClassFilter"><option value="">כל הכיתות</option></select><select id="subjectFilter"><option value="">כל המקצועות</option></select></div><div class="table-wrap" id="allTable"></div></div></section>
+<footer class="footer">פתוח לצפייה ללא סיסמה · המדד מבוסס על עמודת ״מיומנויות ויעדי למידה״ בלבד · ללא הצגת פרטי תלמידים</footer>
+</div>
+<script>
+const SNAPSHOT = [{"clazz":"א׳1","teacher":"משה אמוזיג","subject":"תורה","total":48,"filled":0,"gid":"4000000","source":"1i4vjdqxkbJi63i98TpWZmBJi35Fsno612zUtIpGdUjI"},{"clazz":"א׳1","teacher":"משה אמוזיג","subject":"הלכה","total":48,"filled":0,"gid":"4000001","source":"1i4vjdqxkbJi63i98TpWZmBJi35Fsno612zUtIpGdUjI"},{"clazz":"א׳1","teacher":"משה אמוזיג","subject":"חסידות","total":48,"filled":0,"gid":"4000002","source":"1i4vjdqxkbJi63i98TpWZmBJi35Fsno612zUtIpGdUjI"},{"clazz":"א׳1","teacher":"אורנית אברהם","subject":"שפה","total":48,"filled":0,"gid":"4000003","source":"1i4vjdqxkbJi63i98TpWZmBJi35Fsno612zUtIpGdUjI"},{"clazz":"א׳1","teacher":"חנה פרידמן","subject":"חשבון","total":48,"filled":0,"gid":"4000004","source":"1i4vjdqxkbJi63i98TpWZmBJi35Fsno612zUtIpGdUjI"},{"clazz":"א׳1","teacher":"משה אמוזיג","subject":"טבע","total":48,"filled":0,"gid":"4000005","source":"1i4vjdqxkbJi63i98TpWZmBJi35Fsno612zUtIpGdUjI"},{"clazz":"א׳1","teacher":"נחמה דינה וועלס","subject":"זהירות בדרכים","total":48,"filled":0,"gid":"4000006","source":"1i4vjdqxkbJi63i98TpWZmBJi35Fsno612zUtIpGdUjI"},{"clazz":"א׳1","teacher":"משה אמוזיג","subject":"ניגונים","total":48,"filled":0,"gid":"4000007","source":"1i4vjdqxkbJi63i98TpWZmBJi35Fsno612zUtIpGdUjI"},{"clazz":"א׳3","teacher":"חיים דרוק","subject":"תורה","total":48,"filled":0,"gid":"4001000","source":"12kgy0ps6-8dPeN3UrNax0A4kI03s7EXDglS3S2qOXD8"},{"clazz":"א׳3","teacher":"חיים דרוק","subject":"הלכה","total":48,"filled":0,"gid":"4001001","source":"12kgy0ps6-8dPeN3UrNax0A4kI03s7EXDglS3S2qOXD8"},{"clazz":"א׳3","teacher":"חיים דרוק","subject":"חסידות","total":48,"filled":0,"gid":"4001002","source":"12kgy0ps6-8dPeN3UrNax0A4kI03s7EXDglS3S2qOXD8"},{"clazz":"א׳3","teacher":"חיים דרוק","subject":"שפה","total":48,"filled":0,"gid":"4001003","source":"12kgy0ps6-8dPeN3UrNax0A4kI03s7EXDglS3S2qOXD8"},{"clazz":"א׳3","teacher":"חנה פרידמן","subject":"חשבון","total":48,"filled":0,"gid":"4001004","source":"12kgy0ps6-8dPeN3UrNax0A4kI03s7EXDglS3S2qOXD8"},{"clazz":"א׳3","teacher":"חיים דרוק","subject":"טבע","total":48,"filled":0,"gid":"4001005","source":"12kgy0ps6-8dPeN3UrNax0A4kI03s7EXDglS3S2qOXD8"},{"clazz":"א׳3","teacher":"חיים דרוק","subject":"זהירות בדרכים","total":48,"filled":0,"gid":"4001006","source":"12kgy0ps6-8dPeN3UrNax0A4kI03s7EXDglS3S2qOXD8"},{"clazz":"א׳3","teacher":"חיים דרוק","subject":"ניגונים","total":48,"filled":0,"gid":"4001007","source":"12kgy0ps6-8dPeN3UrNax0A4kI03s7EXDglS3S2qOXD8"},{"clazz":"ב׳1","teacher":"שלום דב בער בליניצקי","subject":"תורה","total":48,"filled":0,"gid":"4002000","source":"1izYT2E-yF9-mtorU2i20Kycv8-xpqmjvc3W56qWkE5I"},{"clazz":"ב׳1","teacher":"שלום דב בער בליניצקי","subject":"משנה","total":48,"filled":0,"gid":"4002001","source":"1izYT2E-yF9-mtorU2i20Kycv8-xpqmjvc3W56qWkE5I"},{"clazz":"ב׳1","teacher":"שלום דב בער בליניצקי","subject":"הלכה","total":48,"filled":0,"gid":"4002002","source":"1izYT2E-yF9-mtorU2i20Kycv8-xpqmjvc3W56qWkE5I"},{"clazz":"ב׳1","teacher":"שלום דב בער בליניצקי","subject":"חסידות","total":48,"filled":0,"gid":"4002003","source":"1izYT2E-yF9-mtorU2i20Kycv8-xpqmjvc3W56qWkE5I"},{"clazz":"ב׳1","teacher":"אורנית אברהם","subject":"שפה","total":48,"filled":0,"gid":"4002004","source":"1izYT2E-yF9-mtorU2i20Kycv8-xpqmjvc3W56qWkE5I"},{"clazz":"ב׳1","teacher":"פריידי כהן","subject":"חשבון","total":48,"filled":0,"gid":"4002005","source":"1izYT2E-yF9-mtorU2i20Kycv8-xpqmjvc3W56qWkE5I"},{"clazz":"ב׳1","teacher":"שלום דב בער בליניצקי","subject":"טבע","total":48,"filled":0,"gid":"4002006","source":"1izYT2E-yF9-mtorU2i20Kycv8-xpqmjvc3W56qWkE5I"},{"clazz":"ב׳1","teacher":"שלום דב בער בליניצקי","subject":"ניגונים","total":48,"filled":0,"gid":"4002007","source":"1izYT2E-yF9-mtorU2i20Kycv8-xpqmjvc3W56qWkE5I"},{"clazz":"ב׳3","teacher":"חננאל קוט","subject":"תורה","total":48,"filled":0,"gid":"4003000","source":"1y9WwC4QEEDHq4L2jc7OlKGVbCASWL1xku0DjhBk96xU"},{"clazz":"ב׳3","teacher":"חננאל קוט","subject":"משנה","total":48,"filled":0,"gid":"4003001","source":"1y9WwC4QEEDHq4L2jc7OlKGVbCASWL1xku0DjhBk96xU"},{"clazz":"ב׳3","teacher":"חננאל קוט","subject":"הלכה","total":48,"filled":0,"gid":"4003002","source":"1y9WwC4QEEDHq4L2jc7OlKGVbCASWL1xku0DjhBk96xU"},{"clazz":"ב׳3","teacher":"חננאל קוט","subject":"חסידות","total":48,"filled":0,"gid":"4003003","source":"1y9WwC4QEEDHq4L2jc7OlKGVbCASWL1xku0DjhBk96xU"},{"clazz":"ב׳3","teacher":"אורנית אברהם","subject":"שפה","total":48,"filled":0,"gid":"4003004","source":"1y9WwC4QEEDHq4L2jc7OlKGVbCASWL1xku0DjhBk96xU"},{"clazz":"ב׳3","teacher":"פריידי כהן","subject":"חשבון","total":48,"filled":0,"gid":"4003005","source":"1y9WwC4QEEDHq4L2jc7OlKGVbCASWL1xku0DjhBk96xU"},{"clazz":"ב׳3","teacher":"חננאל קוט","subject":"טבע","total":48,"filled":0,"gid":"4003006","source":"1y9WwC4QEEDHq4L2jc7OlKGVbCASWL1xku0DjhBk96xU"},{"clazz":"ב׳3","teacher":"חננאל קוט","subject":"ניגונים","total":48,"filled":0,"gid":"4003007","source":"1y9WwC4QEEDHq4L2jc7OlKGVbCASWL1xku0DjhBk96xU"},{"clazz":"ג׳1","teacher":"אריה אריש","subject":"תורה","total":48,"filled":0,"gid":"4004000","source":"1XdOxqZusJ5d-TA4kTGfaDuVHP8Z71TdTtqwmPttjlJQ"},{"clazz":"ג׳1","teacher":"משה אמוזיג","subject":"נביא","total":48,"filled":0,"gid":"4004001","source":"1XdOxqZusJ5d-TA4kTGfaDuVHP8Z71TdTtqwmPttjlJQ"},{"clazz":"ג׳1","teacher":"אריה אריש","subject":"משנה","total":48,"filled":0,"gid":"4004002","source":"1XdOxqZusJ5d-TA4kTGfaDuVHP8Z71TdTtqwmPttjlJQ"},{"clazz":"ג׳1","teacher":"אריה אריש","subject":"הלכה","total":48,"filled":0,"gid":"4004003","source":"1XdOxqZusJ5d-TA4kTGfaDuVHP8Z71TdTtqwmPttjlJQ"},{"clazz":"ג׳1","teacher":"משה אמוזיג","subject":"חסידות","total":48,"filled":0,"gid":"4004004","source":"1XdOxqZusJ5d-TA4kTGfaDuVHP8Z71TdTtqwmPttjlJQ"},{"clazz":"ג׳1","teacher":"אריה אריש","subject":"שפה","total":48,"filled":0,"gid":"4004005","source":"1XdOxqZusJ5d-TA4kTGfaDuVHP8Z71TdTtqwmPttjlJQ"},{"clazz":"ג׳1","teacher":"אהרון קדוש","subject":"חשבון","total":48,"filled":0,"gid":"4004006","source":"1XdOxqZusJ5d-TA4kTGfaDuVHP8Z71TdTtqwmPttjlJQ"},{"clazz":"ג׳1","teacher":"אריה אריש","subject":"טבע","total":48,"filled":0,"gid":"4004007","source":"1XdOxqZusJ5d-TA4kTGfaDuVHP8Z71TdTtqwmPttjlJQ"},{"clazz":"ג׳3","teacher":"חיים אורני","subject":"תורה","total":48,"filled":0,"gid":"4005000","source":"1zznIM5vAmnyO4XhlbmtxI3DNBYB2HOZ8gg0a2imNbwY"},{"clazz":"ג׳3","teacher":"משה אמוזיג","subject":"נביא","total":48,"filled":0,"gid":"4005001","source":"1zznIM5vAmnyO4XhlbmtxI3DNBYB2HOZ8gg0a2imNbwY"},{"clazz":"ג׳3","teacher":"חיים אורני","subject":"משנה","total":48,"filled":0,"gid":"4005002","source":"1zznIM5vAmnyO4XhlbmtxI3DNBYB2HOZ8gg0a2imNbwY"},{"clazz":"ג׳3","teacher":"חיים אורני","subject":"הלכה","total":48,"filled":0,"gid":"4005003","source":"1zznIM5vAmnyO4XhlbmtxI3DNBYB2HOZ8gg0a2imNbwY"},{"clazz":"ג׳3","teacher":"חיים אורני","subject":"חסידות","total":48,"filled":0,"gid":"4005004","source":"1zznIM5vAmnyO4XhlbmtxI3DNBYB2HOZ8gg0a2imNbwY"},{"clazz":"ג׳3","teacher":"חיים אורני","subject":"שפה","total":48,"filled":0,"gid":"4005005","source":"1zznIM5vAmnyO4XhlbmtxI3DNBYB2HOZ8gg0a2imNbwY"},{"clazz":"ג׳3","teacher":"אהרון קדוש","subject":"חשבון","total":48,"filled":0,"gid":"4005006","source":"1zznIM5vAmnyO4XhlbmtxI3DNBYB2HOZ8gg0a2imNbwY"},{"clazz":"ג׳3","teacher":"חיים אורני","subject":"טבע","total":48,"filled":0,"gid":"4005007","source":"1zznIM5vAmnyO4XhlbmtxI3DNBYB2HOZ8gg0a2imNbwY"},{"clazz":"ד׳1","teacher":"מנחם מענדל דורון","subject":"תורה","total":48,"filled":0,"gid":"4006000","source":"1WXjXdNQpm6d1AH8_F2mrpgl2KUoy55BcQ4_CQCvmnuY"},{"clazz":"ד׳1","teacher":"שמואל רסקין","subject":"נביא","total":48,"filled":0,"gid":"4006001","source":"1WXjXdNQpm6d1AH8_F2mrpgl2KUoy55BcQ4_CQCvmnuY"},{"clazz":"ד׳1","teacher":"שמואל רסקין","subject":"משנה","total":48,"filled":0,"gid":"4006002","source":"1WXjXdNQpm6d1AH8_F2mrpgl2KUoy55BcQ4_CQCvmnuY"},{"clazz":"ד׳1","teacher":"מנחם מענדל דורון","subject":"גמרא","total":48,"filled":0,"gid":"4006003","source":"1WXjXdNQpm6d1AH8_F2mrpgl2KUoy55BcQ4_CQCvmnuY"},{"clazz":"ד׳1","teacher":"אריה אריש","subject":"הלכה","total":48,"filled":0,"gid":"4006004","source":"1WXjXdNQpm6d1AH8_F2mrpgl2KUoy55BcQ4_CQCvmnuY"},{"clazz":"ד׳1","teacher":"חננאל קוט","subject":"חסידות","total":48,"filled":0,"gid":"4006005","source":"1WXjXdNQpm6d1AH8_F2mrpgl2KUoy55BcQ4_CQCvmnuY"},{"clazz":"ד׳1","teacher":"מנחם מענדל דורון","subject":"שפה","total":48,"filled":0,"gid":"4006006","source":"1WXjXdNQpm6d1AH8_F2mrpgl2KUoy55BcQ4_CQCvmnuY"},{"clazz":"ד׳1","teacher":"אהרון קדוש","subject":"חשבון","total":48,"filled":0,"gid":"4006007","source":"1WXjXdNQpm6d1AH8_F2mrpgl2KUoy55BcQ4_CQCvmnuY"},{"clazz":"ד׳1","teacher":"אריה אריש","subject":"טבע","total":48,"filled":0,"gid":"4006008","source":"1WXjXdNQpm6d1AH8_F2mrpgl2KUoy55BcQ4_CQCvmnuY"},{"clazz":"ד׳2","teacher":"הדס נמני","subject":"תורה","total":48,"filled":0,"gid":"4007000","source":"14eXR6fvrkl911OirtxeLcvGha_4VaacZD9whAtgtRZE"},{"clazz":"ד׳2","teacher":"הדס נמני","subject":"נביא","total":48,"filled":0,"gid":"4007001","source":"14eXR6fvrkl911OirtxeLcvGha_4VaacZD9whAtgtRZE"},{"clazz":"ד׳2","teacher":"זוהר גינדי","subject":"משנה","total":48,"filled":0,"gid":"4007002","source":"14eXR6fvrkl911OirtxeLcvGha_4VaacZD9whAtgtRZE"},{"clazz":"ד׳2","teacher":"הדס נמני","subject":"הלכה","total":48,"filled":0,"gid":"4007003","source":"14eXR6fvrkl911OirtxeLcvGha_4VaacZD9whAtgtRZE"},{"clazz":"ד׳2","teacher":"זוהר גינדי","subject":"חסידות","total":48,"filled":0,"gid":"4007004","source":"14eXR6fvrkl911OirtxeLcvGha_4VaacZD9whAtgtRZE"},{"clazz":"ד׳2","teacher":"הדס נמני","subject":"שפה","total":48,"filled":0,"gid":"4007005","source":"14eXR6fvrkl911OirtxeLcvGha_4VaacZD9whAtgtRZE"},{"clazz":"ד׳2","teacher":"ראובן רבקי","subject":"חשבון","total":48,"filled":0,"gid":"4007006","source":"14eXR6fvrkl911OirtxeLcvGha_4VaacZD9whAtgtRZE"},{"clazz":"ד׳2","teacher":"הדס נמני","subject":"טבע","total":48,"filled":0,"gid":"4007007","source":"14eXR6fvrkl911OirtxeLcvGha_4VaacZD9whAtgtRZE"},{"clazz":"ד׳2","teacher":"זוהר גינדי","subject":"ניגונים","total":48,"filled":0,"gid":"4007008","source":"14eXR6fvrkl911OirtxeLcvGha_4VaacZD9whAtgtRZE"},{"clazz":"ד׳3","teacher":"מנחם סגל","subject":"תורה","total":48,"filled":0,"gid":"4008000","source":"1WpzWgkrvJaCGiEJKs2DeWzf9ptM-a9UsOzdBk-5Hsqg"},{"clazz":"ד׳3","teacher":"שמואל רסקין","subject":"נביא","total":48,"filled":0,"gid":"4008001","source":"1WpzWgkrvJaCGiEJKs2DeWzf9ptM-a9UsOzdBk-5Hsqg"},{"clazz":"ד׳3","teacher":"שמואל רסקין","subject":"משנה","total":48,"filled":0,"gid":"4008002","source":"1WpzWgkrvJaCGiEJKs2DeWzf9ptM-a9UsOzdBk-5Hsqg"},{"clazz":"ד׳3","teacher":"מנחם סגל","subject":"גמרא","total":48,"filled":0,"gid":"4008003","source":"1WpzWgkrvJaCGiEJKs2DeWzf9ptM-a9UsOzdBk-5Hsqg"},{"clazz":"ד׳3","teacher":"מנחם סגל","subject":"הלכה","total":48,"filled":0,"gid":"4008004","source":"1WpzWgkrvJaCGiEJKs2DeWzf9ptM-a9UsOzdBk-5Hsqg"},{"clazz":"ד׳3","teacher":"מנחם סגל","subject":"חסידות","total":48,"filled":0,"gid":"4008005","source":"1WpzWgkrvJaCGiEJKs2DeWzf9ptM-a9UsOzdBk-5Hsqg"},{"clazz":"ד׳3","teacher":"מנחם סגל","subject":"שפה","total":48,"filled":0,"gid":"4008006","source":"1WpzWgkrvJaCGiEJKs2DeWzf9ptM-a9UsOzdBk-5Hsqg"},{"clazz":"ד׳3","teacher":"אהרון קדוש","subject":"חשבון","total":48,"filled":0,"gid":"4008007","source":"1WpzWgkrvJaCGiEJKs2DeWzf9ptM-a9UsOzdBk-5Hsqg"},{"clazz":"ד׳3","teacher":"מנחם סגל","subject":"טבע","total":48,"filled":0,"gid":"4008008","source":"1WpzWgkrvJaCGiEJKs2DeWzf9ptM-a9UsOzdBk-5Hsqg"},{"clazz":"ד׳3","teacher":"מנחם סגל","subject":"ניגונים","total":48,"filled":0,"gid":"4008009","source":"1WpzWgkrvJaCGiEJKs2DeWzf9ptM-a9UsOzdBk-5Hsqg"},{"clazz":"ה׳1","teacher":"אליהו דביר כהן","subject":"תורה","total":48,"filled":0,"gid":"4009000","source":"1Lz0T2kp2wVvutrgNPuA-fcXhUTllWdYcuGBGCZUtZWE"},{"clazz":"ה׳1","teacher":"מרדכי בן לולו","subject":"נביא","total":48,"filled":0,"gid":"4009001","source":"1Lz0T2kp2wVvutrgNPuA-fcXhUTllWdYcuGBGCZUtZWE"},{"clazz":"ה׳1","teacher":"אליהו דביר כהן","subject":"משנה","total":48,"filled":0,"gid":"4009002","source":"1Lz0T2kp2wVvutrgNPuA-fcXhUTllWdYcuGBGCZUtZWE"},{"clazz":"ה׳1","teacher":"אליהו דביר כהן","subject":"גמרא","total":48,"filled":0,"gid":"4009003","source":"1Lz0T2kp2wVvutrgNPuA-fcXhUTllWdYcuGBGCZUtZWE"},{"clazz":"ה׳1","teacher":"אליהו דביר כהן","subject":"הלכה","total":48,"filled":0,"gid":"4009004","source":"1Lz0T2kp2wVvutrgNPuA-fcXhUTllWdYcuGBGCZUtZWE"},{"clazz":"ה׳1","teacher":"אליהו דביר כהן","subject":"חסידות","total":48,"filled":0,"gid":"4009005","source":"1Lz0T2kp2wVvutrgNPuA-fcXhUTllWdYcuGBGCZUtZWE"},{"clazz":"ה׳1","teacher":"מרדכי בן לולו","subject":"שפה","total":48,"filled":0,"gid":"4009006","source":"1Lz0T2kp2wVvutrgNPuA-fcXhUTllWdYcuGBGCZUtZWE"},{"clazz":"ה׳1","teacher":"מרדכי בן לולו","subject":"חשבון","total":48,"filled":0,"gid":"4009007","source":"1Lz0T2kp2wVvutrgNPuA-fcXhUTllWdYcuGBGCZUtZWE"},{"clazz":"ה׳1","teacher":"אליהו דביר כהן","subject":"טבע","total":48,"filled":0,"gid":"4009008","source":"1Lz0T2kp2wVvutrgNPuA-fcXhUTllWdYcuGBGCZUtZWE"},{"clazz":"ה׳1","teacher":"אליהו דביר כהן","subject":"ניגונים","total":48,"filled":0,"gid":"4009009","source":"1Lz0T2kp2wVvutrgNPuA-fcXhUTllWdYcuGBGCZUtZWE"},{"clazz":"ו׳1","teacher":"שמעון צייטלין","subject":"תורה","total":48,"filled":0,"gid":"4010000","source":"1ufpslnysWQFFHY3BVYiYzs9uVM6w6EpTfUuSEOzClCE"},{"clazz":"ו׳1","teacher":"מרדכי בן לולו","subject":"נביא","total":48,"filled":0,"gid":"4010001","source":"1ufpslnysWQFFHY3BVYiYzs9uVM6w6EpTfUuSEOzClCE"},{"clazz":"ו׳1","teacher":"שמעון צייטלין","subject":"משנה","total":48,"filled":0,"gid":"4010002","source":"1ufpslnysWQFFHY3BVYiYzs9uVM6w6EpTfUuSEOzClCE"},{"clazz":"ו׳1","teacher":"שמעון צייטלין","subject":"גמרא","total":48,"filled":0,"gid":"4010003","source":"1ufpslnysWQFFHY3BVYiYzs9uVM6w6EpTfUuSEOzClCE"},{"clazz":"ו׳1","teacher":"שמעון צייטלין","subject":"הלכה","total":48,"filled":0,"gid":"4010004","source":"1ufpslnysWQFFHY3BVYiYzs9uVM6w6EpTfUuSEOzClCE"},{"clazz":"ו׳1","teacher":"שמעון צייטלין","subject":"חסידות","total":48,"filled":0,"gid":"4010005","source":"1ufpslnysWQFFHY3BVYiYzs9uVM6w6EpTfUuSEOzClCE"},{"clazz":"ו׳1","teacher":"מרדכי בן לולו","subject":"שפה","total":48,"filled":0,"gid":"4010006","source":"1ufpslnysWQFFHY3BVYiYzs9uVM6w6EpTfUuSEOzClCE"},{"clazz":"ו׳1","teacher":"מרדכי בן לולו","subject":"חשבון","total":48,"filled":0,"gid":"4010007","source":"1ufpslnysWQFFHY3BVYiYzs9uVM6w6EpTfUuSEOzClCE"},{"clazz":"ו׳1","teacher":"שמעון צייטלין","subject":"טבע","total":48,"filled":0,"gid":"4010008","source":"1ufpslnysWQFFHY3BVYiYzs9uVM6w6EpTfUuSEOzClCE"},{"clazz":"ו׳1","teacher":"יחיאל יהודה קופצ׳יק","subject":"ניגונים","total":48,"filled":0,"gid":"4010009","source":"1ufpslnysWQFFHY3BVYiYzs9uVM6w6EpTfUuSEOzClCE"},{"clazz":"ו׳2","teacher":"רועי אפרת","subject":"תורה","total":48,"filled":0,"gid":"4011000","source":"1snVFWQnnJE95if4od5CD2rpWxjWv6L4wr_Eph_YspN0"},{"clazz":"ו׳2","teacher":"רועי אפרת","subject":"משנה","total":48,"filled":0,"gid":"4011001","source":"1snVFWQnnJE95if4od5CD2rpWxjWv6L4wr_Eph_YspN0"},{"clazz":"ו׳2","teacher":"רועי אפרת","subject":"גמרא","total":48,"filled":0,"gid":"4011002","source":"1snVFWQnnJE95if4od5CD2rpWxjWv6L4wr_Eph_YspN0"},{"clazz":"ו׳2","teacher":"אברהם רייכמן","subject":"הלכה","total":48,"filled":0,"gid":"4011003","source":"1snVFWQnnJE95if4od5CD2rpWxjWv6L4wr_Eph_YspN0"},{"clazz":"ו׳2","teacher":"רועי אפרת","subject":"חסידות","total":48,"filled":0,"gid":"4011004","source":"1snVFWQnnJE95if4od5CD2rpWxjWv6L4wr_Eph_YspN0"},{"clazz":"ו׳2","teacher":"אברהם רייכמן","subject":"שפה","total":48,"filled":0,"gid":"4011005","source":"1snVFWQnnJE95if4od5CD2rpWxjWv6L4wr_Eph_YspN0"},{"clazz":"ו׳2","teacher":"רועי אפרת","subject":"חשבון","total":48,"filled":0,"gid":"4011006","source":"1snVFWQnnJE95if4od5CD2rpWxjWv6L4wr_Eph_YspN0"},{"clazz":"ו׳2","teacher":"רועי אפרת","subject":"טבע","total":48,"filled":0,"gid":"4011007","source":"1snVFWQnnJE95if4od5CD2rpWxjWv6L4wr_Eph_YspN0"},{"clazz":"ו׳2","teacher":"יחיאל יהודה קופצ׳יק","subject":"ניגונים","total":48,"filled":0,"gid":"4011008","source":"1snVFWQnnJE95if4od5CD2rpWxjWv6L4wr_Eph_YspN0"},{"clazz":"ז׳1","teacher":"זאב רייניץ","subject":"תורה","total":48,"filled":0,"gid":"4012000","source":"1lFlG2PJFx5UyafpX3jFFKzAi0q9p4vAmeJUsgZCzvYk"},{"clazz":"ז׳1","teacher":"מרדכי בן לולו","subject":"נביא","total":48,"filled":0,"gid":"4012001","source":"1lFlG2PJFx5UyafpX3jFFKzAi0q9p4vAmeJUsgZCzvYk"},{"clazz":"ז׳1","teacher":"אברהם רייכמן","subject":"משנה","total":48,"filled":0,"gid":"4012002","source":"1lFlG2PJFx5UyafpX3jFFKzAi0q9p4vAmeJUsgZCzvYk"},{"clazz":"ז׳1","teacher":"זאב רייניץ","subject":"גמרא","total":48,"filled":0,"gid":"4012003","source":"1lFlG2PJFx5UyafpX3jFFKzAi0q9p4vAmeJUsgZCzvYk"},{"clazz":"ז׳1","teacher":"אברהם רייכמן","subject":"גמרא גירסא","total":48,"filled":0,"gid":"4012004","source":"1lFlG2PJFx5UyafpX3jFFKzAi0q9p4vAmeJUsgZCzvYk"},{"clazz":"ז׳1","teacher":"אברהם רייכמן","subject":"הלכה","total":48,"filled":0,"gid":"4012005","source":"1lFlG2PJFx5UyafpX3jFFKzAi0q9p4vAmeJUsgZCzvYk"},{"clazz":"ז׳1","teacher":"זאב רייניץ","subject":"חסידות","total":48,"filled":0,"gid":"4012006","source":"1lFlG2PJFx5UyafpX3jFFKzAi0q9p4vAmeJUsgZCzvYk"},{"clazz":"ז׳1","teacher":"אברהם רייכמן","subject":"שפה","total":48,"filled":0,"gid":"4012007","source":"1lFlG2PJFx5UyafpX3jFFKzAi0q9p4vAmeJUsgZCzvYk"},{"clazz":"ז׳1","teacher":"ראובן בצלאל","subject":"חשבון","total":48,"filled":0,"gid":"4012008","source":"1lFlG2PJFx5UyafpX3jFFKzAi0q9p4vAmeJUsgZCzvYk"},{"clazz":"ז׳1","teacher":"יחיאל יהודה קופצ׳יק","subject":"ניגונים","total":48,"filled":0,"gid":"4012009","source":"1lFlG2PJFx5UyafpX3jFFKzAi0q9p4vAmeJUsgZCzvYk"},{"clazz":"ח׳1","teacher":"אברהם רייכמן","subject":"תורה","total":48,"filled":0,"gid":"4013000","source":"1YWWjtZyCDD_gs3ihxgnEBweM9wmSxJAv7ad81lyfh5s"},{"clazz":"ח׳1","teacher":"אברהם רייכמן","subject":"נביא","total":48,"filled":0,"gid":"4013001","source":"1YWWjtZyCDD_gs3ihxgnEBweM9wmSxJAv7ad81lyfh5s"},{"clazz":"ח׳1","teacher":"אברהם רייכמן","subject":"משנה","total":48,"filled":0,"gid":"4013002","source":"1YWWjtZyCDD_gs3ihxgnEBweM9wmSxJAv7ad81lyfh5s"},{"clazz":"ח׳1","teacher":"משה וואגעל","subject":"גמרא","total":48,"filled":0,"gid":"4013003","source":"1YWWjtZyCDD_gs3ihxgnEBweM9wmSxJAv7ad81lyfh5s"},{"clazz":"ח׳1","teacher":"אברהם רייכמן","subject":"הלכה","total":48,"filled":0,"gid":"4013004","source":"1YWWjtZyCDD_gs3ihxgnEBweM9wmSxJAv7ad81lyfh5s"},{"clazz":"ח׳1","teacher":"משה וואגעל","subject":"חסידות","total":48,"filled":0,"gid":"4013005","source":"1YWWjtZyCDD_gs3ihxgnEBweM9wmSxJAv7ad81lyfh5s"}];
+const SNAPSHOT_LABEL = '25.10.2026';
+const DATA_ENDPOINT = ''; // אפשר להוסיף כאן כתובת שירות JSONP של Google Apps Script לאחר פריסתו
+let state = {rows:SNAPSHOT, updated:SNAPSHOT_LABEL, live:false};
+const $=s=>document.querySelector(s);
+const fmt=n=>new Intl.NumberFormat('he-IL').format(n);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;'}[c]));
+const pct=r=>r.total?100*r.filled/r.total:0;
+const round=n=>Math.round(n);
+const url=r=>'https://docs.google.com/spreadsheets/d/'+encodeURIComponent(r.source)+'/edit#gid='+encodeURIComponent(r.gid);
+const classes=[...new Set(SNAPSHOT.map(r=>r.clazz))];
+const teachers=[...new Set(SNAPSHOT.map(r=>r.teacher))].sort((a,b)=>a.localeCompare(b,'he'));
+const subjects=[...new Set(SNAPSHOT.map(r=>r.subject))].sort((a,b)=>a.localeCompare(b,'he'));
+const aggregate=rows=>({n:rows.length,total:rows.reduce((s,r)=>s+r.total,0),filled:rows.reduce((s,r)=>s+r.filled,0),done:rows.filter(r=>r.total>0&&r.filled>=r.total).length});
+const pAgg=x=>x.total?round(x.filled/x.total*100):0;
+const status=r=>r.total && r.filled>=r.total?['הושלם','done']:r.filled>0?['בתהליך','started']:['טרם התחיל','waiting'];
+const badge=r=>{let [t,c]=status(r);return '<span class="chip '+c+'">'+t+'</span>'};
+const track=value=>'<div class="track"><b style="width:'+Math.min(100,Math.max(0,value))+'%"></b></div>';
+const classRows=clazz=>state.rows.filter(r=>r.clazz===clazz);
+const teacherRows=name=>state.rows.filter(r=>r.teacher===name);
+function cellProgress(a){return '<div class="pct"><b>'+pAgg(a)+'%</b>'+track(pAgg(a))+'</div>'}
+function itemLink(r){return '<a class="card-link" target="_blank" rel="noopener" href="'+url(r)+'">פתח תכנית ↗</a>'}
+function table(rows,cols=['clazz','teacher','subject','progress','status','link']){
+const headers={clazz:'כיתה',teacher:'מורה',subject:'מקצוע',progress:'אחוז מילוי',status:'סטטוס',link:'תכנית המקור'};
+const render=(r,c)=>c==='clazz'?esc(r.clazz):c==='teacher'?esc(r.teacher):c==='subject'?esc(r.subject):c==='progress'?cellProgress({total:r.total,filled:r.filled}):c==='status'?badge(r):itemLink(r);
+return '<table class="table"><thead><tr>'+cols.map(c=>'<th>'+headers[c]+'</th>').join('')+'</tr></thead><tbody>'+(rows.length?rows.map(r=>'<tr>'+cols.map(c=>'<td>'+render(r,c)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+cols.length+'" class="empty">לא נמצאו תכניות</td></tr>')+'</tbody></table>';
+}
+function progressCard(title,arr,meta='',link=''){
+ const a=aggregate(arr),rate=pAgg(a);
+ return '<div class="progress-card"><div class="pc-head"><strong>'+esc(title)+'</strong><span>'+rate+'%</span></div><div class="pc-meta">'+a.done+' מתוך '+a.n+' תכניות הושלמו'+(meta?' • '+esc(meta):'')+'</div>'+track(rate)+'<div class="stat-row"><small>'+fmt(a.filled)+' מתוך '+fmt(a.total)+' שבועות מולאו</small>'+(link?'<a target="_blank" rel="noopener" href="'+link+'">פתח קובץ ↗</a>':'')+'</div></div>';
+}
+function render(){
+ const a=aggregate(state.rows),p=pAgg(a);
+ $('#kpis').innerHTML=
+ '<div class="kpi"><span>שיעור מילוי כללי</span><strong>'+p+'%</strong><small>מתוך יעדי הלמידה</small></div>'+
+ '<div class="kpi"><span>תכניות לימודים</span><strong>'+fmt(a.n)+'</strong><small>'+a.done+' הושלמו</small></div>'+
+ '<div class="kpi"><span>מורים מלמדים</span><strong>'+fmt(teachers.length)+'</strong><small>בכל הכיתות</small></div>'+
+ '<div class="kpi"><span>כיתות</span><strong>'+fmt(classes.length)+'</strong><small>שנת ה׳תשפ״ז</small></div>';
+ $('#overviewCards').innerHTML=classes.map(c=>{let rs=classRows(c);return progressCard('כיתה '+c,rs,rs.length+' מקצועות','https://docs.google.com/spreadsheets/d/'+rs[0].source+'/edit')}).join('');
+ const c=$('#classFilter').value || classes[0];
+ $('#classTable').innerHTML=table(classRows(c),['teacher','subject','progress','status','link']);
+ const t=$('#teacherFilter').value || teachers[0],ts=teacherRows(t);
+ $('#teacherSummary').innerHTML=progressCard(t,ts,'כל הכיתות');
+ $('#teacherTable').innerHTML=table(ts);
+ const search=$('#searchBox').value.trim(),cf=$('#allClassFilter').value,sf=$('#subjectFilter').value;
+ const filtered=state.rows.filter(r=>(!cf||r.clazz===cf)&&(!sf||r.subject===sf)&&(!search||(r.teacher+r.subject+r.clazz).includes(search)));
+ $('#allTable').innerHTML=table(filtered);
+ $('#updatedAt').textContent=state.live?'מעודכן ממערכת המקור: '+state.updated:'תמונת מצב מ־'+state.updated+' · ללא סנכרון חי';
+ $('#statusDot').style.background=state.live?'#9cf3bb':'#f0c878';
+}
+function initSelect(id,items,allOption=''){
+ const sel=$(id),existing=sel.value;
+ sel.innerHTML=(allOption?'<option value="">'+allOption+'</option>':'')+items.map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join('');
+ if(items.includes(existing))sel.value=existing;
+}
+initSelect('#classFilter',classes);initSelect('#teacherFilter',teachers);
+initSelect('#allClassFilter',classes,'כל הכיתות');initSelect('#subjectFilter',subjects,'כל המקצועות');
+['classFilter','teacherFilter','allClassFilter','subjectFilter','searchBox'].forEach(x=>$('#'+x).addEventListener(x==='searchBox'?'input':'change',render));
+document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{
+document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b===btn)));
+document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===btn.dataset.tab));
+render();
+}));
+function applyFeed(payload) {
+ if(!payload || !Array.isArray(payload.rows))return;
+ const lookup=new Map(state.rows.map(r=>[r.source+':'+r.gid,r]));
+ let replaced=0;
+ payload.rows.forEach(next=>{
+   let prev=lookup.get(next.source+':'+next.gid);
+   if(!prev)return;
+   const done=Number(next.filled),total=Number(next.total);
+   if(Number.isFinite(done) && done>=0 && Number.isFinite(total) && total>0){
+     prev.filled=Math.min(done,total);prev.total=total;replaced++;
+   }
+ });
+ if(replaced===state.rows.length){state.live=true;state.updated=payload.updated||new Date().toLocaleString('he-IL');$('#dataNotice').textContent='הנתונים מתעדכנים ממקור הנתונים המורשה. תכניות המקור ממשיכות להיות מוגנות בהרשאות Google Drive.'}
+ render();
+}
+function refresh(){
+ if(!DATA_ENDPOINT){render();$('#dataNotice').textContent='הדשבורד הציבורי פועל. חיבור הסנכרון החי טרם הוגדר; הנתונים המוצגים הם תמונת מצב מתאריך '+SNAPSHOT_LABEL+'.';return}
+ const name='cb'+Date.now(),script=document.createElement('script');let done=false;
+ const timer=setTimeout(()=>{if(done)return;done=true;delete window[name];script.remove();$('#dataNotice').textContent='לא ניתן למשוך נתונים כעת. מוצגת תמונת המצב האחרונה שנשמרה.'},15000);
+ window[name]=data=>{if(done)return;done=true;clearTimeout(timer);delete window[name];script.remove();applyFeed(data)};
+ script.onerror=()=>{if(done)return;done=true;clearTimeout(timer);delete window[name];script.remove();$('#dataNotice').textContent='הסנכרון נכשל; הנתונים האחרונים נשמרו.'};
+ script.src=DATA_ENDPOINT+(DATA_ENDPOINT.includes('?')?'&':'?')+'callback='+name+'&_='+Date.now();document.head.appendChild(script);
+}
+$('#refreshBtn').addEventListener('click',refresh);
+render();if(DATA_ENDPOINT){refresh();setInterval(refresh,5*60*1000);}
+</script></body></html>
